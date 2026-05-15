@@ -8,8 +8,55 @@ import (
 	"strings"
 )
 
+type Shell struct {
+	builtinCmds map[CmdIdent]CmdHandler
+}
+
+func NewShell() *Shell {
+	shell := &Shell{
+		builtinCmds: make(map[CmdIdent]CmdHandler),
+	}
+	shell.registerBuiltinCmd(CmdExit, shell.exitCmd)
+	shell.registerBuiltinCmd(CmdEcho, shell.echoCmd)
+	shell.registerBuiltinCmd(CmdType, shell.typeCmd)
+	return shell
+}
+
+func (s *Shell) registerBuiltinCmd(cmd CmdIdent, handler CmdHandler) {
+	s.builtinCmds[cmd] = handler
+}
+
+type CmdIdent string
+
+type CmdHandler func(args ...string)
+
+const (
+	CmdExit CmdIdent = "exit"
+	CmdEcho CmdIdent = "echo"
+	CmdType CmdIdent = "type"
+)
+
+func (s *Shell) exitCmd(args ...string) {
+	_ = args
+	os.Exit(0)
+}
+
+func (s *Shell) echoCmd(args ...string) {
+	fmt.Println(strings.Join(args, " "))
+}
+
+func (s *Shell) typeCmd(args ...string) {
+	command := args[0]
+	if _, ok := s.builtinCmds[CmdIdent(command)]; ok {
+		fmt.Printf("%s is a shell builtin\n", command)
+	} else {
+		fmt.Printf("%s: not found\n", command)
+	}
+}
+
 func main() {
 	scanner := bufio.NewScanner(os.Stdin)
+	shell := NewShell()
 
 	for {
 		fmt.Print("$ ")
@@ -23,15 +70,14 @@ func main() {
 		command := parts[0]
 		args := parts[1:]
 
-		if command == "exit" {
-			break
-		} else if command == "echo" {
-			fmt.Println(strings.Join(args, " "))
+		if handler, ok := shell.builtinCmds[CmdIdent(command)]; ok {
+			handler(args...)
 			continue
 		}
 
 		io.WriteString(
 			os.Stdout,
 			fmt.Sprintf("%s: command not found\n", command))
+
 	}
 }
