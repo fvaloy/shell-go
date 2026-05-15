@@ -9,10 +9,10 @@ import (
 )
 
 func main() {
-	fmt.Print("$ ")
 	scanner := bufio.NewScanner(os.Stdin)
 
 	for {
+		fmt.Print("$ ")
 		scanned := scanner.Scan()
 		if !scanned {
 			return
