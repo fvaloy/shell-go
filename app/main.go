@@ -19,10 +19,15 @@ func main() {
 		}
 		input := scanner.Text()
 
-		command := strings.Split(input, " ")[0]
+		parts := strings.Split(input, " ")
+		command := parts[0]
+		args := parts[1:]
 
 		if command == "exit" {
 			break
+		} else if command == "echo" {
+			fmt.Println(strings.Join(args, " "))
+			continue
 		}
 
 		io.WriteString(
