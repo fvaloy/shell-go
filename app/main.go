@@ -21,6 +21,10 @@ func main() {
 
 		command := strings.Split(input, " ")[0]
 
+		if command == "exit" {
+			break
+		}
+
 		io.WriteString(
 			os.Stdout,
 			fmt.Sprintf("%s: command not found\n", command))
