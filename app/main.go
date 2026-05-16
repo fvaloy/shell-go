@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"os/exec"
 	"strings"
 )
 
@@ -49,9 +50,13 @@ func (s *Shell) typeCmd(args ...string) {
 	command := args[0]
 	if _, ok := s.builtinCmds[CmdIdent(command)]; ok {
 		fmt.Printf("%s is a shell builtin\n", command)
-	} else {
-		fmt.Printf("%s: not found\n", command)
+		return
 	}
+	if path, err := exec.LookPath(command); err == nil {
+		fmt.Printf("%s is %s\n", command, path)
+		return
+	}
+	fmt.Printf("%s: not found\n", command)
 }
 
 func main() {
