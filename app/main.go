@@ -71,6 +71,9 @@ func (s *Shell) pwdCmd(args ...string) {
 
 func (s *Shell) cdCmd(args ...string) {
 	dir := args[0]
+	if dir == "~" {
+		dir = os.Getenv("HOME")
+	}
 	if err := os.Chdir(dir); err != nil {
 		fmt.Printf("cd: %s: No such file or directory\n", dir)
 	}
