@@ -80,6 +80,14 @@ func main() {
 			continue
 		}
 
+		if _, err := exec.LookPath(command); err == nil {
+			exCmd := exec.Command(command, args...)
+			exCmd.Stdout = os.Stdout
+			exCmd.Stderr = os.Stderr
+			_ = exCmd.Run()
+			continue
+		}
+
 		io.WriteString(
 			os.Stdout,
 			fmt.Sprintf("%s: command not found\n", command))
