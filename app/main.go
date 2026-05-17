@@ -21,6 +21,7 @@ func NewShell() *Shell {
 	shell.registerBuiltinCmd(CmdEcho, shell.echoCmd)
 	shell.registerBuiltinCmd(CmdType, shell.typeCmd)
 	shell.registerBuiltinCmd(CmdPwd, shell.pwdCmd)
+	shell.registerBuiltinCmd(CmdCd, shell.cdCmd)
 	return shell
 }
 
@@ -37,6 +38,7 @@ const (
 	CmdEcho CmdIdent = "echo"
 	CmdType CmdIdent = "type"
 	CmdPwd  CmdIdent = "pwd"
+	CmdCd   CmdIdent = "cd"
 )
 
 func (s *Shell) exitCmd(args ...string) {
@@ -65,6 +67,13 @@ func (s *Shell) pwdCmd(args ...string) {
 	_ = args
 	wd, _ := os.Getwd()
 	fmt.Println(wd)
+}
+
+func (s *Shell) cdCmd(args ...string) {
+	dir := args[0]
+	if err := os.Chdir(dir); err != nil {
+		fmt.Printf("cd: %s: No such file or directory\n", dir)
+	}
 }
 
 func main() {
