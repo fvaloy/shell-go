@@ -20,6 +20,7 @@ func NewShell() *Shell {
 	shell.registerBuiltinCmd(CmdExit, shell.exitCmd)
 	shell.registerBuiltinCmd(CmdEcho, shell.echoCmd)
 	shell.registerBuiltinCmd(CmdType, shell.typeCmd)
+	shell.registerBuiltinCmd(CmdPwd, shell.pwdCmd)
 	return shell
 }
 
@@ -35,6 +36,7 @@ const (
 	CmdExit CmdIdent = "exit"
 	CmdEcho CmdIdent = "echo"
 	CmdType CmdIdent = "type"
+	CmdPwd  CmdIdent = "pwd"
 )
 
 func (s *Shell) exitCmd(args ...string) {
@@ -57,6 +59,12 @@ func (s *Shell) typeCmd(args ...string) {
 		return
 	}
 	fmt.Printf("%s: not found\n", command)
+}
+
+func (s *Shell) pwdCmd(args ...string) {
+	_ = args
+	wd, _ := os.Getwd()
+	fmt.Println(wd)
 }
 
 func main() {
